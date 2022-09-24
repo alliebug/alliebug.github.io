@@ -1,4 +1,5 @@
 /* eslint-disable no-alert */
+// play the game at: https://alliebug.github.io/
 
 /**************
  *   SLICE 1
@@ -52,12 +53,16 @@ function makeProducerDiv(producer) {
   const html = `
   <div class="producer-column">
     <div class="producer-title">${displayName}</div>
+    <div class="buy-sell-buttons">
     <button type="button" id="buy_${producer.id}">Buy</button>
+    <button type="button" id="sell_${producer.id}">Sell</button>
+    </div>
   </div>
   <div class="producer-column">
     <div>Quantity: ${producer.qty}</div>
     <div>Coffee/second: ${producer.cps}</div>
     <div>Cost: ${currentCost} coffee</div>
+    <div>Sell Price: ${Math.floor(currentCost / 2)} coffee</div>
   </div>
   `;
   containerDiv.innerHTML = html;
@@ -123,10 +128,10 @@ function attemptToBuyProducer(data, producerId) {
   return temp;
 }
 
-function buyButtonClick(event, data) {
+function buyOrSellButtonClick(event, data) {
   // your code here
 
-  if (event.target.id && event.target.id != "producer_container") {
+  if (event.target.id && event.target.id.slice(0, 3) === "buy") {
     if (attemptToBuyProducer(data, event.target.id.slice(4))) {
       renderProducers(data);
       updateCoffeeView(data.coffee);
@@ -134,6 +139,15 @@ function buyButtonClick(event, data) {
     } else {
       window.alert("Not enough coffee!");
     }
+  } else if (event.target.id && event.target.id.slice(0, 4) === "sell") {
+    //window.alert("test sell button!");
+    let prod = getProducerById(data, event.target.id.slice(5));
+    prod.qty--;
+    data.coffee += Math.floor(prod.price / 2);
+    data.totalCPS -= prod.cps;
+    renderProducers(data);
+    updateCoffeeView(data.coffee);
+    updateCPSView(data.totalCPS);
   }
 }
 
@@ -184,7 +198,7 @@ if (typeof process === "undefined") {
   // Pass in the browser event and our data object to the event listener
   const producerContainer = document.getElementById("producer_container");
   producerContainer.addEventListener("click", (event) => {
-    buyButtonClick(event, data);
+    buyOrSellButtonClick(event, data);
   });
 
   // add an event listen to the start over button
@@ -218,7 +232,7 @@ else if (process) {
     canAffordProducer,
     updatePrice,
     attemptToBuyProducer,
-    buyButtonClick,
+    buyButtonClick: buyOrSellButtonClick,
     tick,
   };
 }
