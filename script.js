@@ -127,7 +127,16 @@ function attemptToBuyProducer(data, producerId) {
   }
   return temp;
 }
-
+function attempToSellProducer(data, producerId) {
+  let prod = getProducerById(data, producerId);
+  if (prod.qty > 0) {
+    prod.qty--;
+    data.coffee += Math.floor(prod.price / 2);
+    data.totalCPS -= prod.cps;
+    return true;
+  }
+  return false;
+}
 function buyOrSellButtonClick(event, data) {
   // your code here
 
@@ -141,13 +150,13 @@ function buyOrSellButtonClick(event, data) {
     }
   } else if (event.target.id && event.target.id.slice(0, 4) === "sell") {
     //window.alert("test sell button!");
-    let prod = getProducerById(data, event.target.id.slice(5));
-    prod.qty--;
-    data.coffee += Math.floor(prod.price / 2);
-    data.totalCPS -= prod.cps;
-    renderProducers(data);
-    updateCoffeeView(data.coffee);
-    updateCPSView(data.totalCPS);
+    if (attempToSellProducer(data, event.target.id.slice(5))) {
+      renderProducers(data);
+      updateCoffeeView(data.coffee);
+      updateCPSView(data.totalCPS);
+    } else {
+      window.alert("Can't sell things you don't have!");
+    }
   }
 }
 
