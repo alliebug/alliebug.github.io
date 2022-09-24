@@ -1,8 +1,11 @@
 * {
   box-sizing: border-box;
+  font-family: Verdana,
+    sans-serif;
 }
 body {
   margin: 0px;
+  background-image: linear-gradient( #473D35, #D4B59D)
 }
 .column-container {
   display: flex;
@@ -35,7 +38,8 @@ body {
 .column-header {
   font-size: 25px;
   position: relative;
-  background-color: white;
+  background-color: #473D35;
+  color: white;
   top: 8px;
 }
 #big_coffee {
@@ -81,4 +85,8 @@ body {
 .producer button {
   font-size: 15px;
   width: 50px;
+}
+
+#start_over {
+  font-size: 15px;
 }
